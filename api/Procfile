@@ -1,0 +1,7 @@
+# Railway / Heroku-style process types.
+# Web API: defina como comando principal do serviço (Railway → Start Command também coberto por railway.json).
+web: uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}
+
+# Agentes: crie um segundo serviço no mesmo repositório com Root Directory `api` e Start Command:
+#   python -m agents.worker
+agents: python -m agents.worker

@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "rocha-smart": {
+      "command": "python3",
+      "args": ["-m", "rocha_smart_mcp"],
+      "cwd": "${workspaceFolder}/mcp-server",
+      "env": {
+        "ROCHA_SMART_API_BASE_URL": "http://127.0.0.1:8000",
+        "ROCHA_SMART_JWT": "COLOQUE_O_TOKEN_JWT_AQUI",
+        "ANTHROPIC_API_KEY": "",
+        "META_ACCESS_TOKEN": "",
+        "META_AD_ACCOUNT_ID": ""
+      }
+    },
+    "meta-ads-oficial": {
+      "url": "https://mcp.facebook.com/ads"
+    }
+  }
+}

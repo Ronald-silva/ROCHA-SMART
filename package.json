@@ -1,0 +1,11 @@
+{
+  "name": "rocha-smart",
+  "private": true,
+  "description": "Monorepo Rocha Smart — use os scripts abaixo a partir da raiz.",
+  "scripts": {
+    "dev": "npm run dev --prefix web",
+    "build": "npm run build --prefix web",
+    "start": "npm run start --prefix web",
+    "lint": "npm run lint --prefix web"
+  }
+}
