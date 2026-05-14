@@ -1,6 +1,6 @@
 # Rocha Smart
 
-Curadoria em **casa inteligente** e automação residencial: vitrine Next.js com fichas técnicas, widget de atendimento (Sara) e redirecionamento para **compra no site oficial** do fabricante ou loja autorizada (sem carrinho interno).
+**Rocha Smart** é um **magazine digital de tech & casa inteligente** — pauta de produtos, ficha com compatibilidade e link para o checkout oficial. É **conteúdo e curadoria**, não projeto nem instalação; **compra e pós-venda** ficam com fabricante ou loja. Stack: vitrine **Next.js**, catálogo/API **FastAPI**, **Sara** (pré-compra) e integrações de mídia.
 
 ## Estrutura do monorepo
 
