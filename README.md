@@ -31,11 +31,20 @@ npm run dev
 
 Abra [http://localhost:3000](http://localhost:3000). Detalhes das variáveis: `web/.env.example`.
 
-### Deploy na Vercel
+### Deploy na Vercel (obrigatório)
 
-- **Root Directory** = `web` (recomendado), **ou** deixe a raiz e use o `vercel.json` do repositório.
-- Variáveis de ambiente: copie de `web/.env.example` (Neon, `NEXT_PUBLIC_SITE_URL`, pixels, etc.).
-- O app usa **Prisma 6** — não use `npx prisma` sem versão no CI (evita instalar Prisma 7 por engano).
+No painel: **Project → Settings → General → Root Directory** = `web`  
+(Sem isso a Vercel procura `next` na raiz do monorepo e o build falha.)
+
+| Campo | Valor |
+|--------|--------|
+| Root Directory | `web` |
+| Framework | Next.js (detectado automaticamente) |
+| Build / Output | padrão (`npm run build` → `.next`) |
+
+**Environment Variables** (Production): copie de `web/.env.example` — `DATABASE_URL`, `DIRECT_URL`, `NEXT_PUBLIC_SITE_URL=https://rochasmart.com.br`, pixels, etc.
+
+O app usa **Prisma 6** (já em `dependencies` do `web/package.json`).
 
 ### Scripts na raiz
 

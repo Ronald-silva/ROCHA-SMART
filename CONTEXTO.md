@@ -39,7 +39,7 @@ Scripts na **raiz**: `npm run dev|build|start|lint` delegam para `web/`.
 
 - **Domínio oficial**: `https://rochasmart.com.br` (constante em `web/src/lib/site-url.ts`; fallback em produção se `NEXT_PUBLIC_SITE_URL` estiver vazio).
 - **Cloudflare** (grátis): NS no Registro.br → proxy laranja → Vercel.
-- **Vercel** (monorepo): **opção A (recomendada)** — Settings → Root Directory = `web`. **opção B** — raiz do repo com `vercel.json` na raiz (`installCommand`: `npm install --prefix web`). Domains → `rochasmart.com.br`.
+- **Vercel** (monorepo): **Root Directory = `web`** (obrigatório no painel). Não usar `vercel.json` na raiz — quebra detecção do Next.js. Domains → `rochasmart.com.br`.
 - **Railway** (API): subdomínio opcional `api.rochasmart.com.br` → `INTERNAL_API_BASE_URL` no Vercel.
 - **SEO no código**: `app/robots.ts`, `app/sitemap.ts` (home + `/p/[id]` do Prisma); `metadataBase` no `layout.tsx`.
 - **Pixels first-party**: GA4 com `cookie_domain` `.rochasmart.com.br` quando URL não é localhost; Meta — validar domínio no Events Manager.
