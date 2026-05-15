@@ -53,9 +53,6 @@ export const metadata: Metadata = {
     description:
       "Magazine digital de tecnologia e casa inteligente: produtos em destaque, ficha com compatibilidade e link para fechar no site oficial — conteúdo e curadoria, sem carrinho aqui.",
   },
-  icons: {
-    icon: "/favicon.ico",
-  },
 };
 
 export const viewport: Viewport = {

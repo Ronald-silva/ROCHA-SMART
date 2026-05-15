@@ -31,20 +31,29 @@ npm run dev
 
 Abra [http://localhost:3000](http://localhost:3000). Detalhes das variáveis: `web/.env.example`.
 
-### Deploy na Vercel (obrigatório)
+### Deploy na Vercel
 
-No painel: **Project → Settings → General → Root Directory** = `web`  
-(Sem isso a Vercel procura `next` na raiz do monorepo e o build falha.)
+**Passo 1 — obrigatório no painel**
+
+**Settings → General → Root Directory** → digite exatamente: `web` → **Save**
+
+Sem isso o log mostra `npm run build --prefix web` na raiz, **sem** instalar dependências em `web/` → erro `prisma: command not found`.
+
+**Passo 2 — após mudar o Root Directory**
 
 | Campo | Valor |
 |--------|--------|
 | Root Directory | `web` |
-| Framework | Next.js (detectado automaticamente) |
-| Build / Output | padrão (`npm run build` → `.next`) |
+| Framework | Next.js (automático) |
+| Build / Output | padrão (usa `web/package.json`) |
 
-**Environment Variables** (Production): copie de `web/.env.example` — `DATABASE_URL`, `DIRECT_URL`, `NEXT_PUBLIC_SITE_URL=https://rochasmart.com.br`, pixels, etc.
+Faça **Redeploy** (e, se quiser, **Clear build cache** na primeira vez).
 
-O app usa **Prisma 6** (já em `dependencies` do `web/package.json`).
+**Passo 3 — variáveis de ambiente** (Production)
+
+Copie de `web/.env.example`: `DATABASE_URL`, `DIRECT_URL`, `NEXT_PUBLIC_SITE_URL=https://rochasmart.com.br`, pixels, `INTERNAL_*` se usar Sara.
+
+Há um `vercel.json` na **raiz** só como fallback se o Root Directory estiver vazio; com Root Directory = `web`, a Vercel ignora esse arquivo e usa `web/vercel.json`.
 
 ### Scripts na raiz
 
