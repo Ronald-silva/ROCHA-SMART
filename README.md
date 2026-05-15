@@ -2,6 +2,8 @@
 
 **Rocha Smart** é um **magazine digital de tech & casa inteligente** — pauta de produtos, ficha com compatibilidade e link para o checkout oficial. É **conteúdo e curadoria**, não projeto nem instalação; **compra e pós-venda** ficam com fabricante ou loja. Stack: vitrine **Next.js**, catálogo/API **FastAPI**, **Sara** (pré-compra) e integrações de mídia.
 
+**Contexto para novas sessões (qualquer IDE):** [`CONTEXTO.md`](CONTEXTO.md).
+
 ## Estrutura do monorepo
 
 | Pasta | Descrição |
@@ -28,6 +30,12 @@ npm run dev
 ```
 
 Abra [http://localhost:3000](http://localhost:3000). Detalhes das variáveis: `web/.env.example`.
+
+### Deploy na Vercel
+
+- **Root Directory** = `web` (recomendado), **ou** deixe a raiz e use o `vercel.json` do repositório.
+- Variáveis de ambiente: copie de `web/.env.example` (Neon, `NEXT_PUBLIC_SITE_URL`, pixels, etc.).
+- O app usa **Prisma 6** — não use `npx prisma` sem versão no CI (evita instalar Prisma 7 por engano).
 
 ### Scripts na raiz
 
