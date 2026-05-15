@@ -1,27 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" role="img" aria-label="Rocha Smart">
   <defs>
     <linearGradient id="rs-glow" x1="22" y1="158" x2="158" y2="22" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#10b981" stop-opacity="0.28" />
-      <stop offset="1" stop-color="#050508" stop-opacity="0" />
+      <stop stop-color="#10b981" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#050508" stop-opacity="0"/>
     </linearGradient>
   </defs>
-  <rect width="180" height="180" rx="40" fill="#050508" />
-  <rect width="180" height="180" rx="40" fill="url(#rs-glow)" />
-  <rect
-    x="4"
-    y="4"
-    width="172"
-    height="172"
-    rx="36"
-    fill="none"
-    stroke="#fff"
-    stroke-opacity="0.1"
-    stroke-width="2"
-  />
-  <path
-    fill="#f4f4f5"
-    d="M56 50h36c15.5 0 25 8.2 25 20.8 0 9-4.6 15.6-11.8 19L116 130H99l-14-29.5H73.5V130H56V50zm17.4 14.6v23.6h16.6c8 0 12.4-4 12.4-11s-4.4-11-12.4-11h-16.6z"
-  />
-  <rect x="50" y="142" width="80" height="10" rx="5" fill="#34d399" />
-  <circle cx="132" cy="59" r="11" fill="#34d399" />
+  <rect width="180" height="180" rx="40" fill="#050508"/>
+  <rect width="180" height="180" rx="40" fill="url(#rs-glow)"/>
+  <rect x="4" y="4" width="172" height="172" rx="36" fill="none" stroke="#fff" stroke-opacity="0.1" stroke-width="2"/>
+  <path fill="#f4f4f5" d="M56 50h36c15.5 0 25 8.2 25 20.8 0 9-4.6 15.6-11.8 19L116 130H99l-14-29.5H73.5V130H56V50zm17.4 14.6v23.6h16.6c8 0 12.4-4 12.4-11s-4.4-11-12.4-11h-16.6z"/>
+  <rect x="50" y="142" width="80" height="10" rx="5" fill="#34d399"/>
+  <circle cx="132" cy="59" r="11" fill="#34d399"/>
 </svg>
