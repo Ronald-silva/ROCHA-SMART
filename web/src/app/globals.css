@@ -1,0 +1,59 @@
+@import "tailwindcss";
+
+:root {
+  --background: #050508;
+  --foreground: #fafafa;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-rs-body), var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+}
+
+/* Home landing: entrada suave (LCP-friendly — só opacidade/transform) */
+@keyframes rs-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.rs-reveal {
+  animation: rs-rise 0.75s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.rs-reveal-1 {
+  animation-delay: 0.08s;
+}
+.rs-reveal-2 {
+  animation-delay: 0.16s;
+}
+.rs-reveal-3 {
+  animation-delay: 0.24s;
+}
+.rs-reveal-4 {
+  animation-delay: 0.32s;
+}
+
+/* Textura sutil (sem imagem externa) */
+.rs-grain::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  mix-blend-mode: overlay;
+}
