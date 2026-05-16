@@ -12,7 +12,7 @@ const data = {
   sku: SKU,
   price: "1899.00",
   stockQuantity: 0,
-  imageUrl: "/echo-show-11/echo-show-11-hero.jpg",
+  imageUrl: "/echo-show-11/echo-show-11-hero.png",
   brand: "Amazon",
   ai_metadata: {
     smart_home: {
@@ -37,8 +37,7 @@ const data = {
       checkout_url: "https://www.amazon.com.br/dp/B09B2SLKBP",
     },
     gallery: [
-      "/echo-show-11/echo-show-11-hero.jpg",
-      "/echo-show-11/echo-show-11-certificado.jpg",
+      "/echo-show-11/echo-show-11-hero.png",
       "/echo-show-11/echo-show-11-hub.jpg",
       "/echo-show-11/echo-show-11-memorias.jpg",
       "/echo-show-11/echo-show-11-privacidade.jpg",
