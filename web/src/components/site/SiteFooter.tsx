@@ -32,7 +32,9 @@ export function SiteFooter() {
                 </Link>
               </li>
               <li>
-                <span className="text-zinc-600">Política de privacidade (em breve)</span>
+                <Link href="/privacidade" className="transition hover:text-emerald-400">
+                  Política de privacidade
+                </Link>
               </li>
             </ul>
           </div>
