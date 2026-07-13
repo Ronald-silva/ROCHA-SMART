@@ -1,5 +1,7 @@
 "use strict";
 
+// Seed executado diretamente pelo Node; CommonJS é intencional neste arquivo isolado.
+// eslint-disable-next-line @typescript-eslint/no-require-imports
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
@@ -94,14 +96,40 @@ const data = {
 
 async function main() {
   const existing = await prisma.product.findUnique({ where: { sku: SKU } });
+  let product;
   if (existing) {
     console.log("Produto já existe, atualizando:", existing.id);
-    const updated = await prisma.product.update({ where: { sku: SKU }, data });
-    console.log("Atualizado:", updated.id);
-    return;
+    product = await prisma.product.update({ where: { sku: SKU }, data });
+    console.log("Atualizado:", product.id);
+  } else {
+    product = await prisma.product.create({ data });
+    console.log("Criado:", product.id);
   }
-  const created = await prisma.product.create({ data });
-  console.log("Produto criado:", created.id);
+
+  const partner = await prisma.partner.upsert({
+    where: { slug: "amazon-brasil" },
+    update: { allowedDomains: ["amazon.com.br"], status: "active" },
+    create: { name: "Amazon Brasil", slug: "amazon-brasil", allowedDomains: ["amazon.com.br"] },
+  });
+  const merchant = await prisma.merchant.upsert({
+    where: { partnerId_slug: { partnerId: partner.id, slug: "amazon-brasil" } },
+    update: { domain: "amazon.com.br", status: "active" },
+    create: { partnerId: partner.id, name: "Amazon Brasil", slug: "amazon-brasil", domain: "amazon.com.br" },
+  });
+  const now = new Date();
+  const validUntil = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+  const offer = await prisma.offer.upsert({
+    where: { id: `seed-${SKU.toLowerCase()}` },
+    update: { price: data.price, availability: "unknown", verifiedAt: now, validUntil, status: "paused" },
+    create: {
+      id: `seed-${SKU.toLowerCase()}`, productId: product.id, partnerId: partner.id, merchantId: merchant.id,
+      destinationUrl: data.ai_metadata.affiliate.checkout_url, destinationType: "marketplace",
+      commercialRelationship: "editorial", price: data.price, currency: "BRL", availability: "unknown",
+      verificationSource: "legacy_seed_unverified", verifiedAt: now, validUntil, status: "paused",
+    },
+  });
+  await prisma.priceSnapshot.create({ data: { offerId: offer.id, price: data.price, currency: "BRL", availability: "unknown", source: "legacy_seed_unverified" } });
+  console.log("Oferta legada migrada como pausada até verificação:", offer.id);
 }
 
 main()

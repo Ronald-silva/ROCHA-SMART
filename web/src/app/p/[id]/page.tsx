@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ProductBridgeView } from "@/components/bridge/ProductBridgeView";
 import { prisma } from "@/lib/db";
-import { type ProductBridgeDTO, resolveAffiliateCheckoutUrl } from "@/lib/product-bridge";
+import { type ProductBridgeDTO } from "@/lib/product-bridge";
+import { toPublicOffer } from "@/lib/public-offer";
 import { getSiteUrl } from "@/lib/site-url";
 
 export const revalidate = 120;
@@ -12,10 +13,16 @@ type Props = { params: Promise<{ id: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = await params;
-  const p = await prisma.product.findUnique({
-    where: { id },
-    select: { name: true, description: true, brand: true, sku: true, imageUrl: true },
-  });
+  let p;
+  try {
+    p = await prisma.product.findUnique({
+      where: { id },
+      select: { name: true, description: true, brand: true, sku: true, imageUrl: true },
+    });
+  } catch (error) {
+    console.error("product_metadata_catalog_unavailable", { productId: id, error });
+    return { title: "Produto temporariamente indisponível | Rocha Smart", robots: { index: false, follow: false } };
+  }
   if (!p) {
     return { title: "Produto | Rocha Smart" };
   }
@@ -57,7 +64,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BridgeProductPage({ params }: Props) {
   const { id } = await params;
-  const product = await prisma.product.findUnique({ where: { id } });
+  let product;
+  try {
+    product = await prisma.product.findUnique({
+      where: { id },
+      include: { offers: { include: { partner: true, merchant: true }, orderBy: { verifiedAt: "desc" } } },
+    });
+  } catch (error) {
+    console.error("product_page_catalog_unavailable", { productId: id, error });
+    return <main className="mx-auto max-w-2xl px-6 py-24 text-center"><h1 className="text-2xl font-bold text-white">Catálogo temporariamente indisponível</h1><p className="mt-3 text-zinc-400">Não foi possível carregar este produto. Tente novamente mais tarde.</p></main>;
+  }
   if (!product) {
     notFound();
   }
@@ -73,11 +89,11 @@ export default async function BridgeProductPage({ params }: Props) {
     ai_metadata: product.ai_metadata,
   };
 
-  const affiliateUrl = resolveAffiliateCheckoutUrl(product.ai_metadata, product.sku);
+  const offer = product.offers.map((candidate) => toPublicOffer(candidate)).find(Boolean) ?? null;
 
   return (
     <div className="pb-28">
-      <ProductBridgeView dto={dto} affiliateUrl={affiliateUrl} />
+      <ProductBridgeView dto={dto} offer={offer} />
     </div>
   );
 }

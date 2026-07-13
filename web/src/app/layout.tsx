@@ -1,26 +1,12 @@
 import type { Metadata, Viewport } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ClickIdCapture } from "@/components/analytics/ClickIdCapture";
 import { GlobalAnalytics } from "@/components/analytics/GlobalAnalytics";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
-import { rsBody, rsDisplay } from "@/lib/fonts";
 import { getSiteUrl } from "@/lib/site-url";
 
 const siteUrl = getSiteUrl();
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
@@ -67,7 +53,7 @@ export default function RootLayout({
   return (
     <html
       lang="pt-BR"
-      className={`${geistSans.variable} ${geistMono.variable} ${rsDisplay.variable} ${rsBody.variable} h-full antialiased`}
+      className="h-full antialiased"
     >
       <body className="flex min-h-screen flex-col bg-[#050508] text-zinc-100">
         <GlobalAnalytics />

@@ -40,13 +40,16 @@ const CRITERIA: Criterion[] = [
   },
 ];
 
-const DEFAULT_AUTHORITY_TITLE = "Por que o Echo Show 11 é um divisor de águas?";
+const DEFAULT_AUTHORITY_TITLE = "Por que um hub multiprotocolo faz diferença?";
 
 const DEFAULT_AUTHORITY_BODY =
-  "Por possuir rádio Zigbee integrado e suporte a Matter sobre Thread, este aparelho funciona como hub da casa: você pareia lâmpadas, sensores e fechaduras compatíveis direto na tela ou por voz — sem comprar hubs de terceiros (como os da Philips Hue ou Intelbras) para a maioria dos gadgets do dia a dia. É retrocompatibilidade com o que já existe no mercado, mais porta de entrada no padrão Matter que unifica o futuro.";
+  "Quando um produto reúne Zigbee, Matter e Thread, ele pode reduzir a dependência de hubs adicionais e facilitar a integração entre ecossistemas. A capacidade exata varia por modelo e dispositivo conectado; confirme sempre os protocolos listados na ficha técnica e no fabricante.";
 
 const CLOSING_LINE =
   "Curadoria Rocha Smart: Decisão baseada em dados, não em promessas.";
+
+const PROTOCOL_COL =
+  "bg-zinc-900 px-4 py-5 align-top text-zinc-100 sm:px-6 sm:py-6";
 
 function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === "object" && v !== null && !Array.isArray(v);
@@ -82,31 +85,31 @@ function CriterionRow({ row, isLast }: { row: Criterion; isLast: boolean }) {
     <tr className={isLast ? "" : "border-b border-white/[0.06]"}>
       <th
         scope="row"
-        className="px-5 py-5 align-top font-medium text-zinc-300 sm:px-8 sm:py-6"
+        className="bg-zinc-950 px-5 py-5 align-top text-zinc-300 sm:px-8 sm:py-6"
       >
         <span className="flex items-start gap-3">
-          <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/[0.08] bg-white/[0.03] text-emerald-400">
-            <Icon className="h-4 w-4" strokeWidth={1.75} aria-hidden />
+          <span className="mt-0.5 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg border border-white/[0.06] bg-zinc-900 text-emerald-400">
+            <Icon className="h-4 w-4 text-emerald-400" strokeWidth={1.75} aria-hidden />
           </span>
           <span
-            className="pt-1 text-sm font-bold text-white"
+            className="pt-1 text-sm font-bold text-zinc-100"
             style={{ fontFamily: "var(--font-rs-display), system-ui, sans-serif" }}
           >
             {row.label}
           </span>
         </span>
       </th>
-      <td className="px-4 py-5 align-top text-zinc-400 sm:px-6 sm:py-6">
-        <span className="inline-block rounded-md border border-white/[0.04] bg-white/[0.02] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-400/70">
-          Matter
+      <td className={PROTOCOL_COL}>
+        <span className="inline-block rounded-md border border-emerald-500/25 bg-emerald-500/10 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-emerald-400">
+          Matter / Thread
         </span>
-        <p className="mt-2 leading-relaxed">{row.matter}</p>
+        <p className="mt-2 leading-relaxed text-zinc-100">{row.matter}</p>
       </td>
-      <td className="px-4 py-5 align-top text-zinc-400 sm:px-8 sm:py-6">
-        <span className="inline-block rounded-md border border-white/[0.04] bg-white/[0.02] px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-zinc-500">
+      <td className={`${PROTOCOL_COL} sm:px-8`}>
+        <span className="inline-block rounded-md border border-white/[0.08] bg-zinc-800 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider text-zinc-300">
           Zigbee
         </span>
-        <p className="mt-2 leading-relaxed">{row.zigbee}</p>
+        <p className="mt-2 leading-relaxed text-zinc-100">{row.zigbee}</p>
       </td>
     </tr>
   );
@@ -119,10 +122,10 @@ export function ProtocolosNaLupaSection({ ai_metadata }: { ai_metadata: Prisma.J
 
   return (
     <section
-      className="overflow-hidden rounded-2xl border border-white/[0.06] bg-zinc-950"
+      className="overflow-hidden rounded-2xl border border-white/[0.06] bg-zinc-950 text-zinc-100"
       aria-labelledby="protocolos-na-lupa-heading"
     >
-      <header className="border-b border-white/[0.06] px-5 py-7 sm:px-8 sm:py-8">
+      <header className="border-b border-white/[0.06] bg-zinc-950 px-5 py-7 sm:px-8 sm:py-8">
         <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-emerald-400/90">
           White paper simplificado
         </p>
@@ -139,31 +142,31 @@ export function ProtocolosNaLupaSection({ ai_metadata }: { ai_metadata: Prisma.J
         </p>
       </header>
 
-      <div className="overflow-x-auto">
-        <table className="w-full min-w-[520px] border-collapse text-left text-sm">
+      <div className="overflow-x-auto bg-zinc-950">
+        <table className="w-full min-w-[520px] border-collapse text-left text-sm text-zinc-100">
           <thead>
             <tr className="border-b border-white/[0.06]">
               <th
                 scope="col"
-                className="px-5 py-4 text-[11px] font-semibold uppercase tracking-wider text-zinc-600 sm:px-8"
+                className="bg-zinc-950 px-5 py-4 text-[11px] font-semibold uppercase tracking-wider text-zinc-500 sm:px-8"
               >
                 Critério
               </th>
               <th
                 scope="col"
-                className="px-4 py-4 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 sm:px-6"
+                className="bg-zinc-900 px-4 py-4 text-[11px] font-semibold uppercase tracking-wider text-emerald-400/90 sm:px-6"
               >
-                Matter
+                Matter / Thread
               </th>
               <th
                 scope="col"
-                className="px-4 py-4 text-[11px] font-semibold uppercase tracking-wider text-zinc-400 sm:px-8"
+                className="bg-zinc-900 px-4 py-4 text-[11px] font-semibold uppercase tracking-wider text-zinc-300 sm:px-8"
               >
                 Zigbee
               </th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="bg-zinc-950">
             {CRITERIA.map((row, index) => (
               <CriterionRow key={row.id} row={row} isLast={index === CRITERIA.length - 1} />
             ))}
@@ -172,8 +175,8 @@ export function ProtocolosNaLupaSection({ ai_metadata }: { ai_metadata: Prisma.J
       </div>
 
       <div className="border-t border-white/[0.06] px-5 py-8 sm:px-8 sm:py-10">
-        <div className="rounded-xl border border-emerald-500/15 bg-emerald-500/[0.04] p-6 sm:p-7">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-emerald-400/80">
+        <div className="rounded-xl border border-white/[0.06] bg-zinc-900 p-6 sm:p-7">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-emerald-400/90">
             Box de autoridade
           </p>
           <h3
@@ -183,7 +186,7 @@ export function ProtocolosNaLupaSection({ ai_metadata }: { ai_metadata: Prisma.J
             {authorityTitle}
           </h3>
           <p
-            className="mt-4 text-pretty text-sm leading-relaxed text-zinc-400 sm:text-base"
+            className="mt-4 text-pretty text-sm leading-relaxed text-zinc-100 sm:text-base"
             style={{ fontFamily: "var(--font-rs-body, system-ui), sans-serif" }}
           >
             {authorityBody}
@@ -191,7 +194,7 @@ export function ProtocolosNaLupaSection({ ai_metadata }: { ai_metadata: Prisma.J
         </div>
       </div>
 
-      <footer className="border-t border-white/[0.06] bg-black/30 px-5 py-5 sm:px-8">
+      <footer className="border-t border-white/[0.06] bg-zinc-950 px-5 py-5 sm:px-8">
         <p
           className="text-center text-sm font-semibold tracking-tight text-zinc-500"
           style={{ fontFamily: "var(--font-rs-display), system-ui, sans-serif" }}

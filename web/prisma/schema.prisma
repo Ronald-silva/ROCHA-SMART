@@ -12,21 +12,130 @@ datasource db {
 }
 
 model Product {
-  id          String   @id @default(cuid())
-  name        String
-  description String?
-  sku         String?  @unique
-  price       Decimal  @db.Decimal(12, 2)
-  stockQuantity Int    @default(0)
-  imageUrl    String?
-  brand       String?  @default("Rocha Smart")
+  id            String   @id @default(cuid())
+  name          String
+  description   String?
+  sku           String?  @unique
+  price         Decimal  @db.Decimal(12, 2)
+  stockQuantity Int      @default(0)
+  imageUrl      String?
+  brand         String?  @default("Rocha Smart")
   /// Especificações técnicas de casa inteligente (JSONB no PostgreSQL)
-  ai_metadata Json     @default("{}")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  ai_metadata   Json     @default("{}")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  orderItems        OrderItem[]
-  campaignProducts  CampaignProduct[]
+  orderItems       OrderItem[]
+  campaignProducts CampaignProduct[]
+  offers           Offer[]
+}
+
+model Partner {
+  id             String   @id @default(cuid())
+  name           String
+  slug           String   @unique
+  allowedDomains String[]
+  status         String   @default("active")
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  merchants Merchant[]
+  offers    Offer[]
+}
+
+model Merchant {
+  id        String   @id @default(cuid())
+  partnerId String
+  name      String
+  slug      String
+  domain    String
+  status    String   @default("active")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  partner Partner @relation(fields: [partnerId], references: [id], onDelete: Restrict)
+  offers  Offer[]
+
+  @@unique([partnerId, slug])
+  @@index([domain])
+}
+
+model Offer {
+  id                     String   @id @default(cuid())
+  productId              String
+  partnerId              String
+  merchantId             String
+  seller                 String?
+  destinationUrl         String
+  destinationType        String
+  commercialRelationship String
+  price                  Decimal  @db.Decimal(12, 2)
+  currency               String   @default("BRL")
+  availability           String
+  verificationSource     String
+  verifiedAt             DateTime
+  validUntil             DateTime
+  status                 String   @default("active")
+  affiliateMetadata      Json     @default("{}")
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  product        Product         @relation(fields: [productId], references: [id], onDelete: Cascade)
+  partner        Partner         @relation(fields: [partnerId], references: [id], onDelete: Restrict)
+  merchant       Merchant        @relation(fields: [merchantId], references: [id], onDelete: Restrict)
+  snapshots      PriceSnapshot[]
+  outboundClicks OutboundClick[]
+
+  @@index([productId, status, validUntil])
+  @@index([partnerId])
+  @@index([merchantId])
+}
+
+model OutboundClick {
+  id            String   @id @default(cuid())
+  attributionId String   @unique
+  offerId       String
+  utmSource     String?
+  utmMedium     String?
+  utmCampaign   String?
+  utmTerm       String?
+  utmContent    String?
+  referrerHost  String?
+  createdAt     DateTime @default(now())
+
+  offer Offer @relation(fields: [offerId], references: [id], onDelete: Cascade)
+
+  @@index([offerId, createdAt])
+  @@index([createdAt])
+}
+
+model PriceSnapshot {
+  id           String   @id @default(cuid())
+  offerId      String
+  price        Decimal  @db.Decimal(12, 2)
+  currency     String
+  availability String
+  source       String
+  capturedAt   DateTime @default(now())
+
+  offer Offer @relation(fields: [offerId], references: [id], onDelete: Cascade)
+
+  @@index([offerId, capturedAt])
+}
+
+model SdrUsageBucket {
+  subjectHash  String
+  subjectKind  String
+  windowKind   String
+  windowStart  DateTime
+  requestCount Int      @default(0)
+  tokenCount   BigInt   @default(0)
+  costUsd      Decimal  @default(0) @db.Decimal(14, 8)
+  expiresAt    DateTime
+  updatedAt    DateTime @updatedAt
+
+  @@id([subjectHash, subjectKind, windowKind, windowStart])
+  @@index([expiresAt])
 }
 
 model Order {

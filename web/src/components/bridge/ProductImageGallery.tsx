@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useState, useCallback } from "react";
 
 type Props = {
@@ -19,13 +20,15 @@ export function ProductImageGallery({ images, alt }: Props) {
     <div className="flex flex-col gap-3">
       <div className="group relative w-full overflow-hidden rounded-2xl border border-white/10 bg-zinc-950 shadow-2xl">
         <div className="flex aspect-[4/3] items-center justify-center p-6 sm:p-8">
-          <img
+          <Image
             key={active}
             src={images[active]}
             alt={`${alt} — foto ${active + 1} de ${images.length}`}
-            className="max-h-full max-w-full object-contain"
+            fill
+            sizes="(max-width: 896px) 100vw, 896px"
+            className="object-contain p-6 sm:p-8"
             fetchPriority={active === 0 ? "high" : "auto"}
-            decoding="async"
+            unoptimized
           />
         </div>
 
@@ -84,12 +87,13 @@ export function ProductImageGallery({ images, alt }: Props) {
                   : "border-white/10 hover:border-white/30"
               }`}
             >
-              <img
+              <Image
                 src={src}
                 alt=""
-                className="h-full w-full object-cover"
-                loading={i < 4 ? "eager" : "lazy"}
-                decoding="async"
+                fill
+                sizes="72px"
+                className="object-cover"
+                unoptimized
               />
             </button>
           ))}

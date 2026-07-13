@@ -3,19 +3,22 @@
 :root {
   --background: #050508;
   --foreground: #fafafa;
+  --font-rs-display: "Arial Black", "Helvetica Neue", sans-serif;
+  --font-rs-body: "Avenir Next", Avenir, "Segoe UI", sans-serif;
+  --font-rs-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-sans: var(--font-rs-body);
+  --font-mono: var(--font-rs-mono);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-rs-body), var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  font-family: var(--font-rs-body);
 }
 
 /* Home landing: entrada suave (LCP-friendly — só opacidade/transform) */

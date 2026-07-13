@@ -22,18 +22,24 @@ export function getClickIdsForPayload(): ClickIds {
   return { fbclid: fb, gclid: gc };
 }
 
-/** Anexa ids de clique à URL do parceiro (quando ainda não existirem). */
-export function buildAffiliateUrlWithClickIds(target: string, ids: ClickIds): string {
-  try {
-    const u = new URL(target);
-    if (ids.fbclid && !u.searchParams.has("fbclid")) {
-      u.searchParams.set("fbclid", ids.fbclid);
+const FORWARDABLE_PARAMS = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content"] as const;
+
+function isSafeTrackingValue(value: string | null): value is string {
+  return Boolean(value && value.length <= 512 && /^[A-Za-z0-9._~-]+$/.test(value));
+}
+
+/** Cria uma URL first-party: o destino externo só é resolvido e validado no servidor. */
+export function buildOfferRedirectUrl(offerId: string, ids: ClickIds): string {
+  const search = new URLSearchParams();
+  if (isSafeTrackingValue(ids.fbclid)) search.set("fbclid", ids.fbclid);
+  if (isSafeTrackingValue(ids.gclid)) search.set("gclid", ids.gclid);
+  if (typeof window !== "undefined") {
+    const incoming = new URLSearchParams(window.location.search);
+    for (const key of FORWARDABLE_PARAMS) {
+      const value = incoming.get(key);
+      if (isSafeTrackingValue(value)) search.set(key, value);
     }
-    if (ids.gclid && !u.searchParams.has("gclid")) {
-      u.searchParams.set("gclid", ids.gclid);
-    }
-    return u.toString();
-  } catch {
-    return target;
   }
+  const suffix = search.size ? `?${search.toString()}` : "";
+  return `/go/${encodeURIComponent(offerId)}${suffix}`;
 }

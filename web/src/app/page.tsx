@@ -4,13 +4,14 @@ import { prisma } from "@/lib/db";
 import { HomeFaq } from "@/components/site/HomeFaq";
 import { HomeHowItWorks } from "@/components/site/HomeHowItWorks";
 import { TrustStrip } from "@/components/site/TrustStrip";
+import { toPublicOffer } from "@/lib/public-offer";
 
 export const dynamic = "force-dynamic";
 
 type ProductCard = {
   id: string;
   name: string;
-  price: string;
+  price: string | null;
   description: string | null;
   imageUrl: string | null;
 };
@@ -23,20 +24,23 @@ function formatBRL(value: string) {
 
 export default async function Home() {
   let products: ProductCard[] = [];
+  let unavailable = false;
   try {
     const rows = await prisma.product.findMany({
       take: 6,
       orderBy: { createdAt: "desc" },
-      select: { id: true, name: true, price: true, description: true, imageUrl: true },
+      select: { id: true, name: true, description: true, imageUrl: true, offers: { where: { status: "active", availability: { in: ["in_stock", "preorder"] }, validUntil: { gt: new Date() } }, orderBy: { verifiedAt: "desc" }, include: { partner: true, merchant: true } } },
     });
     products = rows.map((r) => ({
       id: r.id,
       name: r.name,
-      price: r.price.toString(),
+      price: r.offers.map((offer) => toPublicOffer(offer)).find(Boolean)?.price ?? null,
       description: r.description,
       imageUrl: r.imageUrl,
     }));
-  } catch {
+  } catch (error) {
+    console.error("Falha ao carregar a vitrine de produtos", error);
+    unavailable = true;
     products = [];
   }
 
@@ -139,7 +143,7 @@ export default async function Home() {
                 <p className="text-sm font-semibold uppercase tracking-widest text-amber-400/90">Vitrine</p>
                 <p className="mt-4 text-2xl font-bold text-white sm:text-3xl">Primeira edição no ar.</p>
                 <p className="mt-4 text-sm leading-relaxed text-zinc-400" style={{ fontFamily: "var(--font-rs-body), sans-serif" }}>
-                  Cadastre os produtos — cada um vira uma página com cara de matéria, SEO e CTA para o canal oficial.
+                  {unavailable ? "Catálogo temporariamente indisponível. Tente novamente mais tarde." : "Nossa próxima seleção de produtos está sendo preparada. Volte em breve."}
                 </p>
               </div>
             </div>
@@ -196,7 +200,7 @@ export default async function Home() {
                         <p className="text-sm text-zinc-600">Ver especificações na página.</p>
                       )}
                       <div className="mt-auto flex items-center justify-between pt-2">
-                        <span className="text-lg font-semibold text-emerald-400">{formatBRL(p.price)}</span>
+                        <span className="text-lg font-semibold text-emerald-400">{p.price ? formatBRL(p.price) : "Oferta em atualização"}</span>
                         <span className="text-sm font-medium text-zinc-400 transition group-hover:text-emerald-300">
                           Ler ficha →
                         </span>
