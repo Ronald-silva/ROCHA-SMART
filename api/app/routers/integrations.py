@@ -43,5 +43,8 @@ async def suppliers_sync(
     except KeyError:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Fornecedor inválido")
     if persist:
-        return await sync_products_persist(session, provider, body.skus)
+        try:
+            return await sync_products_persist(session, provider, body.skus)
+        except RuntimeError as exc:
+            raise HTTPException(status_code=status.HTTP_409_CONFLICT, detail="Persistência recusada por proteção de sincronização") from exc
     return await sync_products_preview(provider, body.skus)

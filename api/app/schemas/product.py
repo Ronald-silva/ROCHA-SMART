@@ -24,6 +24,11 @@ class ProductBase(BaseModel):
     stock_quantity: int = Field(default=0, ge=0)
     image_url: str | None = None
     brand: str | None = "Rocha Smart"
+    affiliate_url: str | None = Field(
+        default=None,
+        pattern=r"^https?://",
+        description="URL do checkout oficial/parceiro usada pelo CTA da ficha.",
+    )
     smart_specs: SmartHomeSpec = Field(default_factory=SmartHomeSpec)
 
 
@@ -39,6 +44,7 @@ class ProductUpdate(BaseModel):
     stock_quantity: int | None = Field(default=None, ge=0)
     image_url: str | None = None
     brand: str | None = None
+    affiliate_url: str | None = Field(default=None, pattern=r"^https?://")
     smart_specs: SmartHomeSpec | None = None
 
 
@@ -86,6 +92,26 @@ def merge_smart_specs_into_metadata(
     if isinstance(extra, dict):
         cur.update(extra)
     out["smart_home"] = cur
+    return out
+
+
+def merge_affiliate_url_into_metadata(
+    base: dict[str, Any] | None,
+    affiliate_url: str | None,
+) -> dict[str, Any]:
+    """Mantém o contrato comercial no JSON compartilhado com o frontend Prisma."""
+    out: dict[str, Any] = dict(base or {})
+    affiliate = out.get("affiliate")
+    block = dict(affiliate) if isinstance(affiliate, dict) else {}
+    if affiliate_url:
+        block["checkout_url"] = affiliate_url
+        out["affiliate"] = block
+    else:
+        block.pop("checkout_url", None)
+        if block:
+            out["affiliate"] = block
+        else:
+            out.pop("affiliate", None)
     return out
 
 

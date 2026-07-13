@@ -5,7 +5,13 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models import Order, Product
-from app.schemas.product import ProductCreate, ProductUpdate, merge_smart_specs_into_metadata, now_utc
+from app.schemas.product import (
+    ProductCreate,
+    ProductUpdate,
+    merge_affiliate_url_into_metadata,
+    merge_smart_specs_into_metadata,
+    now_utc,
+)
 from cuid2 import cuid_wrapper
 
 _cuid = cuid_wrapper()
@@ -15,6 +21,7 @@ async def create_product(session: AsyncSession, data: ProductCreate) -> Product:
     pid = _cuid()
     ts = now_utc()
     meta = merge_smart_specs_into_metadata({}, data.smart_specs)
+    meta = merge_affiliate_url_into_metadata(meta, data.affiliate_url)
     row = Product(
         id=pid,
         name=data.name,
@@ -78,6 +85,8 @@ async def update_product(session: AsyncSession, product_id: str, data: ProductUp
         row.brand = data.brand
     if data.smart_specs is not None:
         row.ai_metadata = merge_smart_specs_into_metadata(row.ai_metadata, data.smart_specs)
+    if "affiliate_url" in data.model_fields_set:
+        row.ai_metadata = merge_affiliate_url_into_metadata(row.ai_metadata, data.affiliate_url)
     row.updatedAt = ts
     try:
         await session.commit()

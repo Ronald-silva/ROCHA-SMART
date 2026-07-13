@@ -99,12 +99,12 @@ async def run_sdr_chat(
     system = SDR_SYSTEM + f"\nSeu nome de atendimento: {nome}."
 
     messages: list[dict[str, Any]] = [{"role": "user", "content": user_message}]
-    max_loops = 8
+    max_loops = settings.sdr_max_tool_cycles + 1
 
     for _ in range(max_loops):
         msg = await client.messages.create(
             model=settings.sdr_model,
-            max_tokens=2048,
+            max_tokens=settings.sdr_max_output_tokens,
             system=system,
             tools=_tools(),
             messages=messages,

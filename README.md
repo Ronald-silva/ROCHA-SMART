@@ -53,7 +53,7 @@ Faça **Redeploy** (e, se quiser, **Clear build cache** na primeira vez).
 
 Copie de `web/.env.example`: `DATABASE_URL`, `DIRECT_URL`, `NEXT_PUBLIC_SITE_URL=https://rochasmart.com.br`, pixels, `INTERNAL_*` se usar Sara.
 
-Há um `vercel.json` na **raiz** só como fallback se o Root Directory estiver vazio; com Root Directory = `web`, a Vercel ignora esse arquivo e usa `web/vercel.json`.
+Existe uma única configuração: defina obrigatoriamente o **Root Directory como `web`**. A Vercel então usa `web/vercel.json`; não há fallback na raiz.
 
 ### Scripts na raiz
 
@@ -63,6 +63,8 @@ Há um `vercel.json` na **raiz** só como fallback se o Root Directory estiver v
 | `npm run build` | build de produção em `web/` |
 | `npm run start` | `next start` em `web/` |
 | `npm run lint` | ESLint em `web/` |
+| `npm run typecheck` | Verificação TypeScript sem gerar arquivos |
+| `npm test` | Lint + TypeScript + testes unitários da API |
 
 ### Banco de dados (Prisma)
 
@@ -70,6 +72,25 @@ Há um `vercel.json` na **raiz** só como fallback se o Root Directory estiver v
 - Comandos úteis (sempre dentro de `web/`): `npm run db:push`, `npm run db:studio`, `npm run db:migrate`
 - O site (`web/`) e a API (`api/`) usam as **mesmas tabelas** no Neon (ex.: `Product`) — dá para cadastrar pelo Prisma ou pela API/MCP.
 - **Campanhas**: existem modelos `Campaign` / `CampaignProduct` no schema para evolução futura; a home hoje lista os últimos produtos, **sem** filtro por campanha na UI.
+
+### Fundação em PostgreSQL descartável
+
+Os comandos abaixo usam exclusivamente o container `rocha-smart-pg-test`, imagem `postgres:16-alpine`, porta local `127.0.0.1:55432`, credenciais fictícias e nenhum volume. Docker precisa estar disponível.
+
+| Comando | Finalidade |
+|---|---|
+| `npm run db:test:up` | Inicia/reutiliza o PostgreSQL isolado |
+| `npm run db:test:down` | Para e remove o container (`--rm`) |
+| `npm run db:test:reset` | Recria o ambiente do zero |
+| `npm run db:migrate:test` | Aplica migrations e confere status |
+| `npm run db:drift:test` | Compara migrations, Prisma e banco descartável |
+| `npm run test:integration` | Valida banco vazio, legado, Prisma/SQLAlchemy, sync e quota |
+| `npm run test:e2e` | Executa build, Playwright e smoke isolados |
+| `npm run verify:foundation` | Executa toda a fundação em sequência e falha no primeiro erro |
+
+Finalize com `npm run db:test:down`. Esses scripts nunca leem `web/.env` para escolher o banco: constroem uma URL exclusiva apontando para a porta de teste.
+
+Para preparar um executor novo para o E2E: `python3 -m pip install -r web/e2e/requirements.txt` e `python3 -m playwright install chromium`. O teste sempre usa Chromium headless.
 
 ## API interna (`api/`)
 
@@ -104,7 +125,8 @@ Referência completa: **`web/.env.example`** (Neon, pixels, GA4, Google Ads, URL
 
 ## Observações
 
-- **Build**: `next/font` pode precisar acessar o Google Fonts durante `npm run build`; ambientes sem rede podem falhar nessa etapa.
+- **Build offline**: a tipografia usa pilhas locais do sistema; o build não depende do Google Fonts.
+- **API em produção**: defina `APP_ENV=production`, um `JWT_SECRET_KEY` com pelo menos 32 caracteres, credenciais próprias em `AUTH_CLIENTS_JSON` e origens explícitas em `CORS_ORIGINS`. A API recusa defaults de desenvolvimento nesse ambiente.
 - **Watchers (ENOSPC)**: em alguns discos/configurações, aumentar `fs.inotify` no Linux ajuda se o dev server reclamar de limite de arquivos observados.
 - **Neon + dev**: no plano gratuito o banco pode **suspender após idle**; o Prisma às vezes loga `connection: Closed` ao reaproveitar socket morto. O cliente em `web/src/lib/db.ts` **repete a query** algumas vezes nesses casos; use `DATABASE_URL` com **pooler** e `pgbouncer=true` (ver `web/.env.example`). Se persistir, confira o projeto no painel Neon ou reinicie `npm run dev`.
 

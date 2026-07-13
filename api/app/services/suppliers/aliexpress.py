@@ -27,17 +27,7 @@ class AliExpressConnector(SupplierConnector):
         base = self._settings.aliexpress_api_base
         key = self._settings.aliexpress_api_key
         if not base or not key:
-            return [
-                SupplierProductSnapshot(
-                    sku=s,
-                    title=None,
-                    stock_quantity=0,
-                    price=None,
-                    currency="BRL",
-                    raw={"note": "AliExpress API não configurada (ALIEXPRESS_API_BASE / ALIEXPRESS_API_KEY)."},
-                )
-                for s in skus
-            ]
+            raise RuntimeError("supplier_not_configured")
 
         headers = {"Authorization": f"Bearer {key}", "Accept": "application/json"}
         out: list[SupplierProductSnapshot] = []
@@ -53,10 +43,10 @@ class AliExpressConnector(SupplierConnector):
                         SupplierProductSnapshot(
                             sku=sku,
                             title=None,
-                            stock_quantity=0,
+                            stock_quantity=None,
                             price=None,
                             currency="BRL",
-                            raw={"error": str(e)},
+                            raw={}, complete=False, error=type(e).__name__,
                         )
                     )
         return out

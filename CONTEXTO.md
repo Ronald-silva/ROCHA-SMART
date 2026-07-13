@@ -83,7 +83,7 @@ Detalhamento: ver conversa / checklist que o time já alinhou; pode duplicar bul
 ## 8. Próximos passos técnicos sugeridos (backlog)
 
 - UI ou rotas para **campanhas** usando `Campaign` / `CampaignProduct`.
-- Campo explícito na API para `affiliate.checkout_url` (hoje pode precisar edição manual de JSON).
+- O CRUD e o MCP aceitam `affiliate_url` / `url_afiliado` e persistem em `ai_metadata.affiliate.checkout_url`.
 - Páginas legais estáticas (`/privacidade`, etc.).
 - Testes E2E críticos (CTA + redirect, home com produtos).
 
@@ -97,6 +97,10 @@ npm run dev
 
 # Banco (dentro de web/)
 cd web && npx prisma db push && npm run dev
+
+# Qualidade (raiz)
+npm test
+npm run build
 ```
 
 ---

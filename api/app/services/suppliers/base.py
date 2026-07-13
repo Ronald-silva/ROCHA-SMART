@@ -10,10 +10,12 @@ from typing import Any
 class SupplierProductSnapshot:
     sku: str
     title: str | None
-    stock_quantity: int
+    stock_quantity: int | None
     price: Decimal | None
     currency: str
     raw: dict[str, Any]
+    complete: bool = True
+    error: str | None = None
 
 
 class SupplierConnector(ABC):

@@ -1,10 +1,12 @@
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi import HTTPException, status
+from sqlalchemy import text
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.config import get_settings
-from app.database import dispose_engine
+from app.database import AsyncSessionLocal, dispose_engine
 from app.routers import ai, auth, catalog, integrations, products, sdr, webhooks
 
 
@@ -36,6 +38,15 @@ def create_app() -> FastAPI:
     @app.get("/health")
     def health() -> dict[str, str]:
         return {"status": "ok", "service": "rocha-smart-api"}
+
+    @app.get("/health/ready")
+    async def readiness() -> dict[str, str]:
+        try:
+            async with AsyncSessionLocal() as session:
+                await session.execute(text("SELECT 1"))
+        except Exception as exc:
+            raise HTTPException(status_code=status.HTTP_503_SERVICE_UNAVAILABLE, detail="Serviço temporariamente indisponível") from exc
+        return {"status": "ready", "database": "available"}
 
     return app
 

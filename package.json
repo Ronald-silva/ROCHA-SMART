@@ -7,6 +7,17 @@
     "dev": "npm run dev --prefix web",
     "build": "npm run build --prefix web",
     "start": "npm run start --prefix web",
-    "lint": "npm run lint --prefix web"
+    "lint": "npm run lint --prefix web",
+    "typecheck": "npm run typecheck --prefix web",
+    "test:api": "cd api && PYTHONPATH=.venv/lib/python3.12/site-packages python3 -m pytest -q",
+    "test": "npm run check --prefix web && npm run test:api",
+    "db:test:up": "bash scripts/test-db.sh up",
+    "db:test:down": "bash scripts/test-db.sh down",
+    "db:test:reset": "bash scripts/test-db.sh reset",
+    "db:migrate:test": "bash scripts/test-db-migrate.sh",
+    "db:drift:test": "bash scripts/test-db-drift.sh",
+    "test:integration": "bash scripts/verify-postgres-foundation.sh",
+    "test:e2e": "bash scripts/verify-foundation-e2e.sh",
+    "verify:foundation": "npm run test:integration && npm test && npm run test:e2e"
   }
 }

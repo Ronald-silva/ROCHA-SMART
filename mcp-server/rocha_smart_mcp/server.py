@@ -56,8 +56,9 @@ async def criar_produto_via_api(
     voltagem: str | None = None,
     conectividade: str = "",
     protocolos: str = "",
+    url_afiliado: str | None = None,
 ) -> str:
-    """Cria produto no backend. conectividade/protocolos: listas separadas por vírgula."""
+    """Cria produto completo. conectividade/protocolos: listas separadas por vírgula."""
     conn = [x.strip() for x in conectividade.split(",") if x.strip()]
     prot = [x.strip() for x in protocolos.split(",") if x.strip()]
     body: dict[str, Any] = {
@@ -65,6 +66,7 @@ async def criar_produto_via_api(
         "price": preco,
         "sku": sku.strip() if sku else None,
         "description": descricao.strip() if descricao else None,
+        "affiliate_url": url_afiliado.strip() if url_afiliado else None,
         "stock_quantity": 0,
         "smart_specs": {
             "voltage": voltagem.strip() if voltagem else None,
